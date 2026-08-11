@@ -1,6 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import AdminLayout from '@/layouts/AdminLayout';
-import { Ban, AlertTriangle } from 'lucide-react'; // Ban icon for "not allowed"
+import { Ban } from 'lucide-react';
+import { routes } from '@/routes';
 
 export default function Error405({ status, message }: { status?: number; message?: string }) {
   return (
@@ -31,7 +32,7 @@ export default function Error405({ status, message }: { status?: number; message
           {/* Action Button - consistent with your palette */}
           <div className="pt-6 sm:pt-8">
             <Link
-              href="/dashboard"
+              href={routes.dashboard()}
               className="inline-flex items-center justify-center px-10 py-4 bg-indigo-600 text-white text-lg font-semibold rounded-xl shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-105 active:scale-100"
             >
               Return to Dashboard

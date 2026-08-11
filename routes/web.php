@@ -28,22 +28,15 @@ Route::prefix('book')->name('public-booking.')->controller(PublicHotelBookingCon
     Route::post('/', 'store')->name('store');
 });
 
-Route::get('/home', function () {
-    return Inertia::render('Login');
-})->middleware('guest')->name('home');
+Route::get('/', function () {
+    return auth()->check()
+        ? redirect()->route('dashboard')
+        : Inertia::render('Login');
+})->name('home');
 
-// Public routes (guest only)
 Route::middleware(['guest'])->group(function () {
-    Route::get('/', function () {
-        return Inertia::render('Login');
-    })->name('login');
-
-    Route::get('/login', function () {
-        return redirect()->route('login');
-    });
-
-    Route::post('/login', [LoginAuthController::class, 'postLogin'])
-        ->name('login.post');
+    Route::get('/login', [LoginAuthController::class, 'getLogin'])->name('login');
+    Route::post('/login', [LoginAuthController::class, 'postLogin'])->name('login.post');
 });
 
 // Protected routes (authenticated users only)
