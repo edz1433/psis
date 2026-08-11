@@ -49,6 +49,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { routes } from "@/routes";
 import {
   Popover,
   PopoverContent,
@@ -545,7 +546,7 @@ export default function PosIndex({
                 </div>
 
                 <Button variant="outline" asChild>
-                  <Link href="/pos/history">
+                  <Link href={routes.pos.history()}>
                     <History className="mr-2 h-4 w-4" />
                     Sales History
                   </Link>

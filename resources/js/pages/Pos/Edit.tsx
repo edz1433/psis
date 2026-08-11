@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
+import { routes } from "@/routes";
 
 type Category = {
   id: number;
@@ -223,7 +224,7 @@ export default function PosEdit({ sale, products, storeName }: Props) {
     const csrfToken =
       document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "";
 
-    fetch(`/pos/${sale.id}`, {
+    fetch(routes.pos.update(sale.id), {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -241,7 +242,7 @@ export default function PosEdit({ sale, products, storeName }: Props) {
       })
       .then(() => {
         toast.success("Sale updated successfully");
-        router.visit("/pos/history");
+        router.visit(routes.pos.history());
       })
       .catch((err) => {
         toast.error("Failed to update sale", { description: err.message });
@@ -323,7 +324,7 @@ export default function PosEdit({ sale, products, storeName }: Props) {
         <div className="max-w-screen-2xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
             <Button variant="outline" size="icon" asChild>
-              <Link href="/pos/history">
+              <Link href={routes.pos.history()}>
                 <ArrowLeft className="h-5 w-5" />
               </Link>
             </Button>

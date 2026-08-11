@@ -19,8 +19,12 @@ export const routes = {
   },
 
   pos: {
-    index: () => route('pos.index'),  
+    index: () => route('pos.index'),
     store: () => route('pos.store'),
+    history: () => route('pos.history'),
+    show: (id: number | string) => route('pos.show', id),
+    edit: (id: number | string) => route('pos.edit', id),
+    update: (id: number | string) => route('pos.update', id),
   },
 
   products: {
@@ -31,10 +35,25 @@ export const routes = {
   },
 
   categories: {
-    index: () => route('products.categories.index'),
-    store: () => route('products.categories.store'),
-    update: (categoryId: number | string) => route('products.categories.update', categoryId),
-    destroy: (categoryId: number | string) => route('products.categories.destroy', categoryId),
+    index: () => route('category.index'),
+    store: () => route('category.store'),
+    update: (categoryId: number | string) => route('category.update', categoryId),
+    destroy: (categoryId: number | string) => route('category.destroy', categoryId),
+  },
+
+  stockManagement: {
+    index: () => route('products.stock-management.index'),
+    store: () => route('products.stock-management.store'),
+  },
+
+  rentals: {
+    properties: () => route('rentals.properties.index'),
+    tenants: () => route('rentals.tenants.index'),
+    payments: () => route('rentals.payments.index'),
+  },
+
+  hotelBookings: {
+    index: () => route('hotel-bookings.index'),
   },
 
   users: {
@@ -63,5 +82,5 @@ export const routes = {
     },
   },
 
-  logs: () => route('logs'),
+  logs: () => route('logs.index'),
 };

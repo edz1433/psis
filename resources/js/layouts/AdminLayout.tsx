@@ -68,11 +68,29 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const { props } = usePage<any>();
   const { theme, setTheme } = useTheme();
 
-  const currentPath = usePage().url.split("?")[0];
+  const appBasePath = String(import.meta.env.VITE_APP_BASE_PATH ?? "").replace(/\/+$/, "");
+
+  const toPath = (url: string): string => {
+    try {
+      return new URL(url, typeof window === "undefined" ? "http://localhost" : window.location.origin).pathname;
+    } catch {
+      return url.split("?")[0];
+    }
+  };
+
+  const stripAppBase = (path: string): string => {
+    if (appBasePath && path.startsWith(`${appBasePath}/`)) {
+      return path.slice(appBasePath.length) || "/";
+    }
+
+    return path;
+  };
+
+  const currentPath = stripAppBase(toPath(usePage().url));
 
   const isActive = (path: string): boolean => {
     const normalizedCurrent = currentPath.replace(/\/$/, "");
-    const normalizedPath = path.replace(/\/$/, "");
+    const normalizedPath = stripAppBase(toPath(path)).replace(/\/$/, "");
     return (
       normalizedCurrent === normalizedPath ||
       normalizedCurrent.startsWith(normalizedPath + "/")
@@ -80,7 +98,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   };
 
   const isExactActive = (path: string): boolean => {
-    return currentPath.replace(/\/$/, "") === path.replace(/\/$/, "");
+    return currentPath.replace(/\/$/, "") === stripAppBase(toPath(path)).replace(/\/$/, "");
   };
 
   const toggleTheme = () => {
@@ -162,7 +180,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                           isActive("/shop") && "bg-accent text-accent-foreground font-medium"
                         )}
                       >
-                        <Link href="/shop">
+                        <Link href={routes.shop.index()}>
                           <ShoppingBag className="h-5 w-5" />
                           <span>Shop</span>
                         </Link>
@@ -181,7 +199,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                           isActive("/pos") && "bg-accent text-accent-foreground font-medium"
                         )}
                       >
-                        <Link href="/pos">
+                        <Link href={routes.pos.index()}>
                           <ShoppingCart className="h-5 w-5" />   {/* ← Different icon for POS */}
                           <span>POS</span>
                         </Link>
@@ -190,7 +208,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   )}
 
                   {/* Catering & Events - ID 3 */}
-                  {hasAccess("3") && (
+                  {false && hasAccess("3") && (
                     <SidebarMenuItem>
                       <Collapsible defaultOpen={isActive("/catering")}>
                         <CollapsibleTrigger asChild>
@@ -267,7 +285,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         <CollapsibleContent>
                           <div className="ml-4 mt-1 flex flex-col space-y-1 pl-2 border-l border-border/60">
                             <Link
-                              href="/rentals/properties"
+                              href={routes.rentals.properties()}
                               className={cn(
                                 "text-sm py-1.5 px-3 rounded-md hover:bg-accent/70 transition-colors",
                                 isActive("/rentals/properties") && "bg-accent text-accent-foreground font-medium"
@@ -276,7 +294,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                               Properties / Units
                             </Link>
                             <Link
-                              href="/rentals/tenants"
+                              href={routes.rentals.tenants()}
                               className={cn(
                                 "text-sm py-1.5 px-3 rounded-md hover:bg-accent/70 transition-colors",
                                 isActive("/rentals/tenants") && "bg-accent text-accent-foreground font-medium"
@@ -285,7 +303,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                               Tenants & Contracts
                             </Link>
                             <Link
-                              href="/rentals/payments"
+                              href={routes.rentals.payments()}
                               className={cn(
                                 "text-sm py-1.5 px-3 rounded-md hover:bg-accent/70 transition-colors",
                                 isActive("/rentals/payments") && "bg-accent text-accent-foreground font-medium"
@@ -322,7 +340,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                         <CollapsibleContent>
                           <div className="ml-4 mt-1 flex flex-col space-y-1 pl-2 border-l border-border/60">
                             <Link
-                              href="/products"
+                              href={routes.products.index()}
                               className={cn(
                                 "text-sm py-1.5 px-3 rounded-md hover:bg-accent/70 transition-colors",
                                 isExactActive("/products") && "bg-accent text-accent-foreground font-medium"
@@ -332,7 +350,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                             </Link>
                             { (props.auth?.user?.role == 1 || props.auth?.user?.role == 2) && (
                             <Link
-                              href="/products/categories"
+                              href={routes.categories.index()}
                               className={cn(
                                 "text-sm py-1.5 px-3 rounded-md hover:bg-accent/70 transition-colors",
                                 isActive("/products/categories") && "bg-accent text-accent-foreground font-medium"
@@ -342,7 +360,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                             </Link>
                              )}
                             <Link
-                              href="/products/stock-management"
+                              href={routes.stockManagement.index()}
                               className={cn(
                                 "text-sm py-1.5 px-3 rounded-md hover:bg-accent/70 transition-colors",
                                 isActive("/products/stock") && "bg-accent text-accent-foreground font-medium"
@@ -352,7 +370,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                             </Link>
                            { (props.auth?.user?.role == 1 || props.auth?.user?.role == 2) && (
                             <Link
-                              href="/products/suppliers"
+                              href={routes.suppliers.index()}
                               className={cn(
                                 "text-sm py-1.5 px-3 rounded-md hover:bg-accent/70 transition-colors",
                                 isActive("/products/suppliers") && "bg-accent text-accent-foreground font-medium"
@@ -364,7 +382,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                             {/* NEW: Manage Supplier Orders */}
                             {hasAccess("11") && (
                               <Link
-                                href="/supplier/orders"
+                                href={routes.supplier.orders.index()}
                                 className={cn(
                                   "text-sm py-1.5 px-3 rounded-md hover:bg-accent/70 transition-colors flex items-center gap-2",
                                   isActive("/supplier/orders") && "bg-accent text-accent-foreground font-medium"
@@ -390,7 +408,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                           isActive("/hotel-bookings") && "bg-accent text-accent-foreground font-medium"
                         )}
                       >
-                        <Link href="/hotel-bookings">
+                        <Link href={routes.hotelBookings.index()}>
                           <Hotel className="h-5 w-5" />
                           <span>Hotel Bookings</span>
                         </Link>
@@ -399,7 +417,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   )}
 
                   {/* Sugar Cane - ID 6 */}
-                  {hasAccess("6") && (
+                  {false && hasAccess("6") && (
                     <SidebarMenuItem>
                       <Collapsible defaultOpen={isActive("/sugarcane")}>
                         <CollapsibleTrigger asChild>
@@ -463,7 +481,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                   )}
 
                   {/* Livestock - ID 7 */}
-                  {hasAccess("7") && (
+                  {false && hasAccess("7") && (
                     <SidebarMenuItem>
                       <Collapsible defaultOpen={isActive("/livestock")}>
                         <CollapsibleTrigger asChild>
@@ -545,7 +563,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                           isActive("/users") && "bg-accent text-accent-foreground font-medium"
                         )}
                       >
-                        <Link href="/users">
+                        <Link href={routes.users.index()}>
                           <User className="h-5 w-5" />
                           <span>Users</span>
                         </Link>
@@ -583,7 +601,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                           isActive("/logs") && "bg-accent text-accent-foreground font-medium"
                         )}
                       >
-                        <Link href="/logs">
+                        <Link href={routes.logs()}>
                           <History className="h-5 w-5" />
                           <span>Logs</span>
                         </Link>
@@ -636,18 +654,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
 
-                    <DropdownMenuItem asChild>
-                      <Link href="/account" className="flex items-center gap-2">
-                        <User className="h-4 w-4" />
-                        Account
-                      </Link>
-                    </DropdownMenuItem>
-
-                    <DropdownMenuSeparator />
-
                     <DropdownMenuItem
                       className="text-destructive cursor-pointer"
-                      onSelect={() => router.post("/logout", {}, { preserveState: false })}
+                      onSelect={() => router.post(routes.logoutPost(), {}, { preserveState: false })}
                     >
                       <LogOut className="mr-2 h-4 w-4" />
                       Logout

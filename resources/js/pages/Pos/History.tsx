@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowLeft, Eye, Edit, Search } from "lucide-react";
 import { format } from "date-fns";
+import { routes } from "@/routes";
 
 type Sale = {
   id: number;
@@ -64,7 +65,7 @@ export default function PosHistory({ sales, storeName }: Props) {
           <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
             <div className="flex items-center gap-3">
               <Button variant="outline" size="icon" asChild>
-                <Link href="/pos">
+                <Link href={routes.pos.index()}>
                   <ArrowLeft className="h-5 w-5" />
                 </Link>
               </Button>
@@ -133,12 +134,12 @@ export default function PosHistory({ sales, storeName }: Props) {
                         <TableCell>
                           <div className="flex gap-2">
                             <Button variant="outline" size="sm" asChild>
-                              <Link href={`/pos/${sale.id}`}>
+                              <Link href={routes.pos.show(sale.id)}>
                                 <Eye className="h-4 w-4" />
                               </Link>
                             </Button>
                             <Button variant="outline" size="sm" asChild>
-                              <Link href={`/pos/${sale.id}/edit`}>
+                              <Link href={routes.pos.edit(sale.id)}>
                                 <Edit className="h-4 w-4" />
                               </Link>
                             </Button>

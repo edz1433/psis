@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowLeft, Edit, Printer } from "lucide-react";
 import { format } from "date-fns";
+import { routes } from "@/routes";
 
 type SaleItem = {
   product: { name: string };
@@ -49,7 +50,7 @@ export default function PosShow({ sale, storeName }: Props) {
           <div className="flex items-center justify-between mb-6 print:hidden">
             <div className="flex items-center gap-3">
               <Button variant="outline" size="icon" asChild>
-                <Link href="/pos/history">
+                <Link href={routes.pos.history()}>
                   <ArrowLeft className="h-5 w-5" />
                 </Link>
               </Button>
@@ -61,7 +62,7 @@ export default function PosShow({ sale, storeName }: Props) {
 
             <div className="flex gap-3">
               <Button variant="outline" asChild>
-                <Link href={`/pos/${sale.id}/edit`}>
+                <Link href={routes.pos.edit(sale.id)}>
                   <Edit className="mr-2 h-4 w-4" />
                   Edit Sale
                 </Link>
