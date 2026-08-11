@@ -87,12 +87,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
-  const userAccess = props.auth?.user?.access ?? [];
+  const isAdmin = String(props.auth?.user?.role ?? "") === "1" || props.user?.isAdmin === true;
+  const userAccess = (props.auth?.user?.access ?? []).map(String);
   const systemLogo = props.system?.logo_url ?? "/images/cpsu-logo.png";
   const systemName = props.system?.name ?? "PSIS";
 
   const hasAccess = (id: string): boolean => {
-    return userAccess.includes(id);
+    return isAdmin || userAccess.includes(id);
   };
 
   return (

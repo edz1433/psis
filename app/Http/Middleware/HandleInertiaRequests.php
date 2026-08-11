@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\MenuHelper;
 use App\Models\SystemSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -43,6 +44,32 @@ class HandleInertiaRequests extends Middleware
     {
         $user = Auth::user();
         $systemSettings = SystemSetting::current();
+        $isAdmin = (string) $user?->role === '1';
+        $access = $user
+            ? ($isAdmin ? MenuHelper::ids() : array_map('strval', $user->access ?? []))
+            : [];
+        $authUser = null;
+
+        if ($user) {
+            $authUser = $user->load([
+                'supplier:id,name,phone,address,contact_person',
+            ])->only([
+                'id',
+                'fname',
+                'lname',
+                'username',
+                'name',
+                'email',
+                'role',
+                'supplier_id',
+                'access',
+                'supplier',
+                'created_at',
+            ]);
+
+            $authUser['role'] = (string) $user->role;
+            $authUser['access'] = $access;
+        }
 
         return array_merge(parent::share($request), [
             'name' => $systemSettings->system_name,
@@ -54,29 +81,15 @@ class HandleInertiaRequests extends Middleware
             ],
 
             'auth' => [
-                'user' => $user ? $user->load([
-                    'supplier:id,name,phone,address,contact_person',
-                ])->only([
-                    'id',
-                    'fname',
-                    'lname',
-                    'username',
-                    'name',
-                    'email',
-                    'role',
-                    'supplier_id',
-                    'access',
-                    'supplier',
-                    'created_at',
-                ]) : null,
+                'user' => $authUser,
 
                 'isAuthenticated' => Auth::check(),
             ],
 
             // Helpful frontend shortcuts
             'user' => [
-                'isAdmin' => $user?->role === 1,
-                'isSupplier' => $user?->role !== 1 && $user?->supplier_id !== null,
+                'isAdmin' => $isAdmin,
+                'isSupplier' => ! $isAdmin && $user?->supplier_id !== null,
                 'supplierName' => $user?->supplier?->name ?? null,
                 'supplierPhone' => $user?->supplier?->phone ?? null,
             ],

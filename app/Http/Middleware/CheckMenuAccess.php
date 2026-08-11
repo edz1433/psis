@@ -18,9 +18,13 @@ class CheckMenuAccess
             return redirect()->route('login');
         }
 
-        $access = $user->access ?? [];
+        if ((string) $user->role === '1') {
+            return $next($request);
+        }
 
-        if (! in_array($menuId, $access)) {
+        $access = array_map('strval', $user->access ?? []);
+
+        if (! in_array((string) $menuId, $access, true)) {
             // No permission → show 403 or redirect with message
             abort(403, 'You do not have access to this page.');
 

@@ -12,9 +12,11 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
+        'name',
         'fname',
         'lname',
         'username',
+        'email',
         'password',
         'role',
         'supplier_id',
@@ -55,7 +57,7 @@ class User extends Authenticatable
      */
     public function hasAccess(string|int $menuId): bool
     {
-        return in_array((string) $menuId, $this->access ?? []);
+        return $this->isAdmin() || in_array((string) $menuId, array_map('strval', $this->access ?? []), true);
     }
 
     /**
@@ -64,6 +66,11 @@ class User extends Authenticatable
     public function getAccessibleMenus(): array
     {
         $allMenus = MenuHelper::all();
+
+        if ($this->isAdmin()) {
+            return $allMenus;
+        }
+
         $userAccess = $this->access ?? [];
 
         return array_intersect_key($allMenus, array_flip($userAccess));
