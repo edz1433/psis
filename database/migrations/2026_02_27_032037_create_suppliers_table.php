@@ -15,6 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->foreignId('campus_id')->nullable()->constrained()->nullOnDelete();
+            $table->boolean('is_campus')->default(false);
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->string('contact_person')->nullable();
             $table->timestamps();
         });
     }

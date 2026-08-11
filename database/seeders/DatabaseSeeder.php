@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\MenuHelper;
+use App\Models\Supplier;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,15 +15,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $supplier = Supplier::query()->firstOrCreate(
+            ['name' => 'CPSU Main Campus'],
+            [
+                'is_campus' => true,
+                'contact_person' => 'System Administrator',
+            ]
+        );
 
-        if (Schema::hasColumn('users', 'email')) {
-            User::query()->where('email', 'test@example.com')->first()
-                ?? User::factory()->create([
-                    'name' => 'Test User',
-                    'email' => 'test@example.com',
-                ]);
-        }
+        User::query()->firstOrCreate(
+            ['username' => env('ADMIN_USERNAME', 'admin')],
+            [
+                'name' => 'System Administrator',
+                'fname' => 'System',
+                'lname' => 'Administrator',
+                'email' => env('ADMIN_EMAIL', 'admin@example.com'),
+                'password' => Hash::make(env('ADMIN_PASSWORD', 'password')),
+                'role' => '1',
+                'supplier_id' => $supplier->id,
+                'access' => MenuHelper::ids(),
+            ]
+        );
 
         $this->call(RentalSeeder::class);
         $this->call(HotelBookingSeeder::class);
