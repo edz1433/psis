@@ -284,8 +284,14 @@ export default function PublicBookingIndex() {
                 </SearchPanelField>
                 <SearchPanelField label="Guests">
                   <div className="grid grid-cols-2 gap-2">
-                    <Input type="number" min="1" value={form.data.adults} onChange={(event) => { form.setData("adults", event.target.value); setBreakdown([]); }} className={cn("h-11", numberInputClass)} />
-                    <Input type="number" min="0" value={form.data.children} onChange={(event) => { form.setData("children", event.target.value); setBreakdown([]); }} className={cn("h-11", numberInputClass)} />
+                    <div className="space-y-1">
+                      <Label htmlFor="booking-adults" className="text-xs font-medium text-slate-600">Adults</Label>
+                      <Input id="booking-adults" type="number" min="1" value={form.data.adults} onChange={(event) => { form.setData("adults", event.target.value); setBreakdown([]); }} className={cn("h-10", numberInputClass)} />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="booking-children" className="text-xs font-medium text-slate-600">Children</Label>
+                      <Input id="booking-children" type="number" min="0" value={form.data.children} onChange={(event) => { form.setData("children", event.target.value); setBreakdown([]); }} className={cn("h-10", numberInputClass)} />
+                    </div>
                   </div>
                 </SearchPanelField>
                 <div className="flex items-end">
