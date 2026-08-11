@@ -2,11 +2,16 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     public function up(): void
     {
+        if (! Schema::hasColumn('products', 'supplier_id') || ! Schema::hasColumn('products', 'stock')) {
+            return;
+        }
+
         $products = DB::table('products')
             ->whereNotNull('supplier_id')
             ->where('stock', '>', 0)
