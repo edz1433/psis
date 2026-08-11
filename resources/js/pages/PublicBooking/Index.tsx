@@ -284,13 +284,13 @@ export default function PublicBookingIndex() {
                 </SearchPanelField>
                 <SearchPanelField label="Guests">
                   <div className="grid grid-cols-2 gap-2">
-                    <div className="space-y-1">
-                      <Label htmlFor="booking-adults" className="text-xs font-medium text-slate-600">Adults</Label>
-                      <Input id="booking-adults" type="number" min="1" value={form.data.adults} onChange={(event) => { form.setData("adults", event.target.value); setBreakdown([]); }} className={cn("h-10", numberInputClass)} />
+                    <div className="rounded-md border bg-white px-3 py-1.5 shadow-sm">
+                      <Label htmlFor="booking-adults" className="block text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500">Adults</Label>
+                      <Input id="booking-adults" type="number" min="1" value={form.data.adults} onChange={(event) => { form.setData("adults", event.target.value); setBreakdown([]); }} className={cn("h-5 border-0 bg-transparent p-0 shadow-none focus-visible:ring-0", numberInputClass)} />
                     </div>
-                    <div className="space-y-1">
-                      <Label htmlFor="booking-children" className="text-xs font-medium text-slate-600">Children</Label>
-                      <Input id="booking-children" type="number" min="0" value={form.data.children} onChange={(event) => { form.setData("children", event.target.value); setBreakdown([]); }} className={cn("h-10", numberInputClass)} />
+                    <div className="rounded-md border bg-white px-3 py-1.5 shadow-sm">
+                      <Label htmlFor="booking-children" className="block text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-500">Children</Label>
+                      <Input id="booking-children" type="number" min="0" value={form.data.children} onChange={(event) => { form.setData("children", event.target.value); setBreakdown([]); }} className={cn("h-5 border-0 bg-transparent p-0 shadow-none focus-visible:ring-0", numberInputClass)} />
                     </div>
                   </div>
                 </SearchPanelField>
